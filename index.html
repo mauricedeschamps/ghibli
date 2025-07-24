@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -186,6 +186,19 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+
+        .view-details {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .view-details:hover {
+            background: var(--accent-color);
         }
 
         .location-detail {
@@ -460,8 +473,7 @@
                         <h3 class="card-title">${isJapaneseMode() ? location.title_ja : location.title_en}</h3>
                         <p class="card-description">${isJapaneseMode() ? location.description_ja : location.description_en}</p>
                         <button class="view-details" data-id="${location.id}">
-                            <span class="en">View Details</span>
-                            <span class="ja hidden">詳細を見る</span>
+                            ${isJapaneseMode() ? '詳細を見る' : 'View Details'}
                         </button>
                     </div>
                 `;
@@ -471,7 +483,7 @@
             // Add event listeners to view details buttons
             document.querySelectorAll('.view-details').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    const id = parseInt(e.target.closest('.view-details').dataset.id);
+                    const id = parseInt(e.target.dataset.id);
                     showLocationDetail(id);
                 });
             });
@@ -487,26 +499,24 @@
                         <h2 class="detail-title">${isJapaneseMode() ? location.title_ja : location.title_en}</h2>
                         <p>${isJapaneseMode() ? location.address_ja : location.address_en}</p>
                     </div>
-                    <img src="${location.image}" alt="${location.title_en}" class="detail-image">
+                    <img src="${location.image}" alt="${isJapaneseMode() ? location.title_ja : location.title_en}" class="detail-image">
                     <p class="detail-description">${isJapaneseMode() ? location.description_ja : location.description_en}</p>
                     <a href="${location.official_url}" target="_blank" class="official-link">
-                        <span class="en">Official Website</span>
-                        <span class="ja hidden">公式サイト</span>
+                        ${isJapaneseMode() ? '公式サイト' : 'Official Website'}
                     </a>
                     <button class="back-button" id="backToList">
                         <i class="fas fa-arrow-left"></i>
-                        <span class="en">Back to List</span>
-                        <span class="ja hidden">一覧に戻る</span>
+                        ${isJapaneseMode() ? '一覧に戻る' : 'Back to List'}
                     </button>
                 `;
                 
-                locationDetail.classList.remove('hidden');
-                locationsList.classList.add('hidden');
+                locationDetail.style.display = 'block';
+                locationsList.style.display = 'none';
                 
                 // Add event listener to back button
                 document.getElementById('backToList').addEventListener('click', () => {
-                    locationDetail.classList.add('hidden');
-                    locationsList.classList.remove('hidden');
+                    locationDetail.style.display = 'none';
+                    locationsList.style.display = 'grid';
                 });
             }
         }
@@ -528,6 +538,14 @@
                 localStorage.setItem('language', isJapanese ? 'en' : 'ja');
                 toggleLanguageVisibility();
                 renderLocations();
+                
+                // Update detail page if it's open
+                if (locationDetail.style.display === 'block') {
+                    const currentId = locationDetail.querySelector('.detail-title')?.dataset?.id;
+                    if (currentId) {
+                        showLocationDetail(parseInt(currentId));
+                    }
+                }
             });
         }
         
@@ -542,4 +560,42 @@
             
             // Language
             const savedLanguage = localStorage.getItem('language') || 'en';
-            docu
+            document.documentElement.lang = savedLanguage;
+            toggleLanguageVisibility();
+        }
+        
+        // Update mode button text
+        function updateModeButton() {
+            const isLightMode = document.body.classList.contains('light-mode');
+            modeToggle.querySelector('.en').textContent = isLightMode ? 'Dark Mode' : 'Light Mode';
+            modeToggle.querySelector('.ja').textContent = isLightMode ? 'ダークモード' : 'ライトモード';
+            modeToggle.querySelector('i').className = isLightMode ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        
+        // Toggle language visibility
+        function toggleLanguageVisibility() {
+            const isJapanese = document.documentElement.lang === 'ja';
+            
+            document.querySelectorAll('.en').forEach(el => {
+                el.classList.toggle('hidden', isJapanese);
+            });
+            
+            document.querySelectorAll('.ja').forEach(el => {
+                el.classList.toggle('hidden', !isJapanese);
+            });
+            
+            // Update language button text
+            langToggle.querySelector('.en').textContent = isJapanese ? 'English' : '日本語';
+            langToggle.querySelector('.ja').textContent = isJapanese ? 'English' : '日本語';
+        }
+        
+        // Check if Japanese mode is active
+        function isJapaneseMode() {
+            return document.documentElement.lang === 'ja';
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
