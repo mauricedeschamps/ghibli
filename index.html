@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Ghibli Pilgrimage Guide</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐉</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #c06c84;
+            --background-color: #1a1a2e;
+            --card-bg-color: #16213e;
+            --text-color: #f0f0f0;
+            --header-footer-bg: #0f3460;
+            --accent-color: #e94560;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .light-mode {
+            --background-color: #f5f5f5;
+            --card-bg-color: #ffffff;
+            --text-color: #333333;
+            --header-footer-bg: #4a6fa5;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--header-footer-bg);
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--accent-color);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .mode-toggle, .lang-toggle {
+            background: var(--card-bg-color);
+            border: 2px solid var(--primary-color);
+            color: var(--text-color);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .mode-toggle:hover, .lang-toggle:hover {
+            background: var(--primary-color);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=1000&auto=format&fit=crop') center/cover;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px var(--shadow-color);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            text-shadow: 1px 1px 2px var(--shadow-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 2rem;
+            color: var(--accent-color);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: var(--accent-color);
+            margin: 10px auto;
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .location-card {
+            background: var(--card-bg-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .location-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px var(--shadow-color);
+        }
+
+        .card-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        .card-description {
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .location-detail {
+            display: none;
+            padding: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .detail-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .detail-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+
+        .detail-description {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .official-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .official-link:hover {
+            background: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        .back-button {
+            background: var(--card-bg-color);
+            color: var(--text-color);
+            border: 2px solid var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 20px auto;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: var(--primary-color);
+        }
+
+        footer {
+            background-color: var(--header-footer-bg);
+            text-align: center;
+            padding: 25px 20px;
+            margin-top: 50px;
+        }
+
+        .contact-info {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .contact-email {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .contact-email:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .locations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-image {
+                height: 250px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-dragon"></i>
+                <span class="en">Ghibli Pilgrimage Guide</span>
+                <span class="ja hidden">ジブリ聖地巡礼ガイド</span>
+            </div>
+            <div class="controls">
+                <button id="modeToggle" class="mode-toggle">
+                    <i class="fas fa-moon"></i>
+                    <span class="en">Light Mode</span>
+                    <span class="ja hidden">ライトモード</span>
+                </button>
+                <button id="langToggle" class="lang-toggle">
+                    <i class="fas fa-globe"></i>
+                    <span class="en">日本語</span>
+                    <span class="ja hidden">English</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1 class="en">Discover Ghibli's Magical Locations</h1>
+        <h1 class="ja hidden">ジブリの魔法の場所を発見</h1>
+        <p class="en">Explore the real-world inspirations behind Studio Ghibli's beloved films</p>
+        <p class="ja hidden">スタジオジブリの愛される映画の背景にある現実世界のインスピレーションを探求</p>
+    </section>
+
+    <div class="container">
+        <h2 class="section-title en">Must-Visit Ghibli Pilgrimage Sites</h2>
+        <h2 class="section-title ja hidden">訪れるべきジブリ聖地</h2>
+        
+        <div id="locationsList" class="locations-grid">
+            <!-- Locations will be populated by JavaScript -->
+        </div>
+        
+        <div id="locationDetail" class="location-detail">
+            <!-- Location detail will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="contact-info">
+            <p class="en">Contact us</p>
+            <p class="ja hidden">お問い合わせ</p>
+            <a href="mailto:mementomorikatsu@gmail.com" class="contact-email">mementomorikatsu@gmail.com</a>
+        </div>
+    </footer>
+
+    <script>
+        // Sample data for Ghibli locations
+        const ghibliLocations = [
+            {
+                id: 1,
+                title_en: "Ghibli Museum, Mitaka",
+                title_ja: "三鷹の森ジブリ美術館",
+                image: "https://images.unsplash.com/photo-1578474849011-88d6b24e8c5d?q=80&w=1000&auto=format&fit=crop",
+                description_en: "The official Ghibli museum designed by Hayao Miyazaki himself. Features exclusive short films, original artwork, and a rooftop garden with a Laputa robot soldier.",
+                description_ja: "宮崎駿自身が設計した公式ジブリ美術館。限定短編映画、オリジナルアートワーク、ラピュタのロボット兵がいる屋上庭園があります。",
+                official_url: "https://www.ghibli-museum.jp/en/",
+                address_en: "1-1-83 Shimorenjaku, Mitaka-shi, Tokyo",
+                address_ja: "〒181-0013 東京都三鷹市下連雀1丁目1-83"
+            },
+            {
+                id: 2,
+                title_en: "Ghibli Park, Aichi",
+                title_ja: "ジブリパーク、愛知",
+                image: "https://images.unsplash.com/photo-1547891656-0b20e05b8a66?q=80&w=1000&auto=format&fit=crop",
+                description_en: "Opened in 2022, this expansive park features five themed areas inspired by Ghibli films including 'My Neighbor Totoro' and 'Howl's Moving Castle'.",
+                description_ja: "2022年にオープンしたこの広大な公園には、「となりのトトロ」や「ハウルの動く城」などジブリ作品にインスパイアされた5つのテーマエリアがあります。",
+                official_url: "https://ghibli-park.jp/en/",
+                address_en: "Expo 2005 Aichi Commemorative Park, Nagakute City, Aichi Prefecture",
+                address_ja: "〒480-1342 愛知県長久手市茨ケ廻間乙1533-1 愛・地球博記念公園内"
+            },
+            {
+                id: 3,
+                title_en: "Satsuki and Mei's House",
+                title_ja: "サツキとメイの家",
+                image: "https://images.unsplash.com/photo-1534214526114-0ea4d47b04f2?q=80&w=1000&auto=format&fit=crop",
+                description_en: "A full-scale replica of the house from 'My Neighbor Totoro' located in the Expo 2005 Commemorative Park near Nagoya.",
+                description_ja: "名古屋近くの愛・地球博記念公園内にある「となりのトトロ」の家の実物大レプリカです。",
+                official_url: "https://www.pref.aichi.jp/global/en/location/detail.html?lid=48",
+                address_en: "Expo 2005 Aichi Commemorative Park, Nagakute City, Aichi Prefecture",
+                address_ja: "〒480-1342 愛知県長久手市茨ケ廻間乙1533-1 愛・地球博記念公園内"
+            },
+            {
+                id: 4,
+                title_en: "Sekizenkan Ryokan, Gunma",
+                title_ja: "積善館、群馬",
+                image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop",
+                description_en: "This historic hot spring inn is said to be the inspiration for the bathhouse in 'Spirited Away'. Founded in 1691, it's one of Japan's oldest ryokans.",
+                description_ja: "この歴史ある温泉旅館は「千と千尋の神隠し」の湯屋のインスピレーションと言われています。1691年創業で、日本最古の旅館の一つです。",
+                official_url: "https://www.sekizenkan.co.jp/english/",
+                address_en: "411 Yoshioka, Tsumagoi-mura, Agatsuma-gun, Gunma",
+                address_ja: "〒377-1615 群馬県吾妻郡嬬恋村大字干俣411"
+            },
+            {
+                id: 5,
+                title_en: "Shirakawa-go, Gifu",
+                title_ja: "白川郷、岐阜",
+                image: "https://images.unsplash.com/photo-1575425186775-b8de9a427e67?q=80&w=1000&auto=format&fit=crop",
+                description_en: "This UNESCO World Heritage site with its traditional gassho-zukuri farmhouses inspired the setting for 'Princess Mononoke'.",
+                description_ja: "ユネスコ世界遺産に登録されたこの合掌造りの集落は「もののけ姫」の舞台のインスピレーションとなりました。",
+                official_url: "https://shirakawa-go.gr.jp/en/",
+                address_en: "Ogimachi, Shirakawa-mura, Ono-gun, Gifu Prefecture",
+                address_ja: "〒501-5627 岐阜県大野郡白川村荻町"
+            },
+            {
+                id: 6,
+                title_en: "Tombo no Iru Restaurant, Tokyo",
+                title_ja: "とんぼのいるレストラン、東京",
+                image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1000&auto=format&fit=crop",
+                description_en: "The real-life inspiration for the restaurant in 'Whisper of the Heart'. Located in Seiseki-Sakuragaoka, this cozy restaurant features Ghibli memorabilia.",
+                description_ja: "「耳をすませば」のレストランの現実版。世田谷区成城桜ヶ丘にあるこの居心地の良いレストランにはジブリの記念品が飾られています。",
+                official_url: "https://www.tripadvisor.com/Restaurant_Review-g1066453-d7246770-Reviews-Tombo_no_Iru_Restaurant-Tama_Tokyo.html",
+                address_en: "1-12-10 Seiseki-Sakuragaoka, Tama City, Tokyo",
+                address_ja: "〒206-0011 東京都多摩市関戸1-12-10"
+            }
+        ];
+
+        // DOM Elements
+        const locationsList = document.getElementById('locationsList');
+        const locationDetail = document.getElementById('locationDetail');
+        const modeToggle = document.getElementById('modeToggle');
+        const langToggle = document.getElementById('langToggle');
+        
+        // Initialize the app
+        function initApp() {
+            renderLocations();
+            setupEventListeners();
+            applySavedSettings();
+        }
+        
+        // Render location cards
+        function renderLocations() {
+            locationsList.innerHTML = '';
+            
+            ghibliLocations.forEach(location => {
+                const card = document.createElement('div');
+                card.className = 'location-card fade-in';
+                card.innerHTML = `
+                    <img src="${location.image}" alt="${location.title_en}" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">${isJapaneseMode() ? location.title_ja : location.title_en}</h3>
+                        <p class="card-description">${isJapaneseMode() ? location.description_ja : location.description_en}</p>
+                        <button class="view-details" data-id="${location.id}">
+                            <span class="en">View Details</span>
+                            <span class="ja hidden">詳細を見る</span>
+                        </button>
+                    </div>
+                `;
+                locationsList.appendChild(card);
+            });
+            
+            // Add event listeners to view details buttons
+            document.querySelectorAll('.view-details').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.closest('.view-details').dataset.id);
+                    showLocationDetail(id);
+                });
+            });
+        }
+        
+        // Show location detail
+        function showLocationDetail(id) {
+            const location = ghibliLocations.find(loc => loc.id === id);
+            
+            if (location) {
+                locationDetail.innerHTML = `
+                    <div class="detail-header">
+                        <h2 class="detail-title">${isJapaneseMode() ? location.title_ja : location.title_en}</h2>
+                        <p>${isJapaneseMode() ? location.address_ja : location.address_en}</p>
+                    </div>
+                    <img src="${location.image}" alt="${location.title_en}" class="detail-image">
+                    <p class="detail-description">${isJapaneseMode() ? location.description_ja : location.description_en}</p>
+                    <a href="${location.official_url}" target="_blank" class="official-link">
+                        <span class="en">Official Website</span>
+                        <span class="ja hidden">公式サイト</span>
+                    </a>
+                    <button class="back-button" id="backToList">
+                        <i class="fas fa-arrow-left"></i>
+                        <span class="en">Back to List</span>
+                        <span class="ja hidden">一覧に戻る</span>
+                    </button>
+                `;
+                
+                locationDetail.classList.remove('hidden');
+                locationsList.classList.add('hidden');
+                
+                // Add event listener to back button
+                document.getElementById('backToList').addEventListener('click', () => {
+                    locationDetail.classList.add('hidden');
+                    locationsList.classList.remove('hidden');
+                });
+            }
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Dark/Light mode toggle
+            modeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const isLightMode = document.body.classList.contains('light-mode');
+                localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
+                updateModeButton();
+            });
+            
+            // Language toggle
+            langToggle.addEventListener('click', () => {
+                const isJapanese = document.documentElement.lang === 'ja';
+                document.documentElement.lang = isJapanese ? 'en' : 'ja';
+                localStorage.setItem('language', isJapanese ? 'en' : 'ja');
+                toggleLanguageVisibility();
+                renderLocations();
+            });
+        }
+        
+        // Apply saved settings from localStorage
+        function applySavedSettings() {
+            // Theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+            updateModeButton();
+            
+            // Language
+            const savedLanguage = localStorage.getItem('language') || 'en';
+            docu
